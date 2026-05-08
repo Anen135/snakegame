@@ -57,7 +57,6 @@ void SimpleAI() {
     if (abs(dy) > height / 2) dy = (dy > 0) ? dy - height : dy + height;
 
     auto scoreDirection = [&](Direction d) {
-        // Проверка на разворот на 180 градусов (смерть)
         if ((d == LEFT && dir == RIGHT) || (d == RIGHT && dir == LEFT) ||
             (d == UP && dir == DOWN) || (d == DOWN && dir == UP)) return -100;
 
@@ -124,21 +123,26 @@ inline void BorderOutHandler() {
 }
 
 inline void DeadHandler() {
-    setCursorPos(0, height + 2);
-    std::cout << "Game Over! Final score: " << score << "/" << record << '\n';
-#ifdef LOOP
-    Setup();
-#else
-    exit(0);
-#endif
+    #ifdef LOOP
+        record = (((record) > (score)) ? (record) : (score));
+        setCursorPos(0, height + 2);
+        setColor(15);
+        std::cout << "Game Over! Final score: " << score << "/" << record << '\n';
+        Setup();
+    #else
+        exit(0);
+    #endif
 }
 
 inline void WinHandler() {
     #ifdef LOOP
         int r {score};
+        record = (((record) > (score)) ? (record) : (score));
         Setup();
         score = r;
-        record = (((record) > (score)) ? (record) : (score));
+        setCursorPos(0, height + 2);
+        setColor(15);
+        std::cout << "Game Over! Final score: " << score << "/" << record << '\n';
     #else
         exit(0);
     #endif
